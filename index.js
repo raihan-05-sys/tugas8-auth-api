@@ -15,24 +15,29 @@ app.use(express.json()); // Supaya API bisa membaca input data berbentuk JSON
 // ==========================================
 // KONFIGURASI KONEKSI DATABASE (VERSI AMAN UNTUK VERCEL)
 // ==========================================
-const db = mysql.createConnection({
+const db = mysql.createPool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     ssl: {
-        rejectUnauthorized: false // Hapus baris 'ca: ...' sama sekali
-    }
+        rejectUnauthorized: false
+    },
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
 // Melakukan Tes Koneksi ke Database
-db.connect((err) => {
+db.getConnection((err, connection) => {
     if (err) {
-        console.error('Gagal terhubung ke database:', err.message);
+        console.error('❌ Gagal terhubung ke database:', err.message);
+        // Kita tidak perlu mematikan aplikasi, tapi bisa memberikan penanda
         return;
     }
     console.log('✅ Berhasil terhubung ke database MySQL toko_komputer (Aiven Cloud)!');
+    connection.release(); // PENTING: Lepaskan koneksi kembali ke pool
 });
 
 // Endpoint Halaman Depan (Tes API)
