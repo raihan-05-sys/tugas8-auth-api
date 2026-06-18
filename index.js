@@ -5,9 +5,6 @@ const jwt = require('jsonwebtoken');
 const mysql = require('mysql2');
 const cors = require('cors');
 
-const fs = require('fs');
-const path = require('path');
-
 const app = express();
 const port = process.env.PORT || 3000; // Mengambil port dari .env
 
@@ -16,7 +13,7 @@ app.use(cors());
 app.use(express.json()); // Supaya API bisa membaca input data berbentuk JSON
 
 // ==========================================
-// KONFIGURASI KONEKSI DATABASE CLOUD AIVEN (VERSI AMAN)
+// KONFIGURASI KONEKSI DATABASE (VERSI AMAN UNTUK VERCEL)
 // ==========================================
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -25,8 +22,7 @@ const db = mysql.createConnection({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     ssl: {
-        ca: fs.readFileSync(path.join(__dirname, 'ca.pem')),
-        rejectUnauthorized: false
+        rejectUnauthorized: false // Hapus baris 'ca: ...' sama sekali
     }
 });
 
