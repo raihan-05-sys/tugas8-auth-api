@@ -1,1 +1,12 @@
+# Mengabaikan folder library karena ukurannya sangat besar
 node_modules/
+
+# Mengabaikan file rahasia (Kredensial Database & Kunci JWT)
+.env
+
+# Mengabaikan sertifikat keamanan database Aiven
+ca.pem
+
+# Mengabaikan log error dari sistem Node.js
+.npm
+*.log
